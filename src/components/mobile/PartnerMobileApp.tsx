@@ -24,32 +24,26 @@ export default function PartnerMobileApp({
 
   // Mapeamento dos ícones do Bottom Nav
   const NAV_ITEMS = [
-    { id: 'dashboard', icon: '🏠', label: 'Início' },
     { id: 'projects', icon: '🏗️', label: 'Projetos' },
-    { id: 'dailylog', icon: '📋', label: 'Rotina' },
+    { id: 'dashboard', icon: '🏠', label: 'Início' },
     { id: 'stages', icon: '⏳', label: 'Etapas' }
   ];
 
   // Drawer options (The "Mais" Tab)
   const DRAWER_ITEMS = [
+    { id: 'dailylog', icon: '📋', label: 'Diário de Obra (Rotina)' },
     { id: 'proposals', icon: '📝', label: 'Orçamentos (Propostas)' },
     { id: 'calendar', icon: '📅', label: 'Calendário de Obras' },
     { id: 'leads', icon: '🎯', label: 'Oportunidades (CRM)' },
     { id: 'profile', icon: '👤', label: 'Meu Perfil' }
   ];
 
-  // Identifica se a aba atual está no Bottom Nav principal
-  const isMainTab = NAV_ITEMS.some(item => item.id === activeTab);
-  // Se não for, assumimos que é uma aba do Menu "Mais" (e deixamos o icone 'Mais' ativo)
+  // O ícone mais já não vive no bottom nav, então omitimos a verificação de isMainTab
 
   const handleNavClick = (id: string) => {
-    if (id === 'more') {
-      setDrawerOpen(true);
-    } else {
-      setActiveTab(id);
-      setDrawerOpen(false);
-      window.scrollTo(0, 0);
-    }
+    setActiveTab(id);
+    setDrawerOpen(false);
+    window.scrollTo(0, 0);
   };
 
   const handleDrawerItemClick = (id: string) => {
@@ -63,22 +57,19 @@ export default function PartnerMobileApp({
       
       {/* HEADER FIXO MOBILE */}
       <header className="mobile-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <img src="/bravo-logo.png" alt="Bravo" className="mobile-logo" />
-        </div>
+        <button className="mobile-header-btn" onClick={() => setDrawerOpen(true)} style={{ fontSize: '1.5rem', marginLeft: '-5px' }}>
+          ☰
+        </button>
+
         <div className="mobile-header-actions">
            {/* Notification Bell */}
            <button className="mobile-header-btn" onClick={() => setNotifOpen(true)}>
              🔔
              {unreadCount > 0 && <span className="badge" style={{background: 'var(--danger)', color: 'white', position: 'absolute', top: -2, right:-5, fontSize: '0.6rem', padding: '1px 5px', borderRadius: 10}}>{unreadCount}</span>}
            </button>
-           {/* Perfil Mini: Clicando vai pro perfil */}
-           <img 
-             src={profileData?.avatar_url || 'https://ui-avatars.com/api/?name=Partner&background=C9943A&color=fff'} 
-             alt="User" 
-             className="mobile-header-avatar"
-             onClick={() => handleNavClick('profile')}
-           />
+           
+           {/* Logo - Canto Direito */}
+           <img src="/Logo Fundo azul.jpeg" alt="Bravo Homes" className="mobile-logo" style={{ borderRadius: '4px', height: '28px', objectFit: 'cover' }} />
         </div>
       </header>
 
@@ -100,15 +91,6 @@ export default function PartnerMobileApp({
              <span className="mb-nav-label">{item.label}</span>
            </div>
          ))}
-         
-         {/* Botão Especial "Mais" */}
-         <div 
-           className={`mb-nav-item ${!isMainTab && !drawerOpen ? 'active' : ''}`}
-           onClick={() => handleNavClick('more')}
-         >
-           <span className="mb-nav-icon">☰</span>
-           <span className="mb-nav-label">Mais</span>
-         </div>
       </nav>
 
       {/* DRAWER (MORE MENU MODAL) */}
