@@ -1,0 +1,228 @@
+.mobile-app-container {
+  min-height: 100vh;
+  background-color: var(--bg-base);
+  color: var(--text-main);
+  padding-bottom: 80px; /* Space for Bottom Nav */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Redefine variables for mobile context to override desktop if needed */
+.mobile-app-container {
+  --bottom-nav-height: 65px;
+  --header-height: 60px;
+}
+
+/* Mobile Header */
+.mobile-header {
+  height: var(--header-height);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  /* Minimal glassmorphism */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(10, 13, 18, 0.85);
+}
+
+[data-theme="light"] .mobile-header {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.mobile-logo {
+  height: 24px;
+  object-fit: contain;
+}
+
+.mobile-header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.mobile-header-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+.mobile-header-btn:hover {
+  color: var(--text-main);
+}
+.mobile-header-btn .badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(30%, -30%);
+  background: var(--danger);
+  color: white;
+  font-size: 0.6rem;
+  padding: 2px 5px;
+  border-radius: 10px;
+  min-width: 15px;
+  text-align: center;
+}
+
+/* User Avatar Handle */
+.mobile-header-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--gold-primary);
+  background: var(--bg-input);
+}
+
+/* Main Content Area */
+.mobile-content {
+  flex: 1;
+  padding: 15px;
+  overflow-x: hidden;
+}
+
+/* Bottom Navigation */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--bottom-nav-height);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 110;
+  padding-bottom: env(safe-area-inset-bottom, 0px); /* iPhone X padding */
+}
+
+/* Menu Item */
+.mb-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  height: 100%;
+  transition: color 0.2s;
+}
+
+.mb-nav-item.active {
+  color: var(--gold-primary);
+}
+
+.mb-nav-icon {
+  font-size: 1.2rem;
+}
+
+.mb-nav-label {
+  font-size: 0.65rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+}
+
+/* Drawers & Modals (The "Mais" Menu) */
+.mobile-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 120;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(2px);
+}
+.mobile-drawer-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.mobile-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  z-index: 130;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 20px 20px 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.mobile-drawer.open {
+  transform: translateY(0);
+}
+
+.drawer-drag-pill {
+  width: 40px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--border-light);
+  margin: 0 auto 15px auto;
+}
+
+.drawer-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  background: var(--bg-input);
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--text-main);
+  border: 1px solid transparent;
+  transition: border 0.2s;
+}
+.drawer-menu-item:hover {
+  border-color: var(--gold-glow);
+}
+.drawer-menu-item .dmi-icon {
+  font-size: 1.2rem;
+  background: rgba(201, 148, 58, 0.1);
+  color: var(--gold-primary);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.drawer-menu-item .dmi-text {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Internal fix to adapt web components to mobile */
+.mobile-app-container .page.active {
+  animation: none;
+}
+.mobile-app-container .u-section-header {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+.mobile-app-container .card {
+  border-radius: 12px;
+}

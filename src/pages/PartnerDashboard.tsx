@@ -18,6 +18,7 @@ import PartnerDailyLogTab from '../components/partner/PartnerDailyLogTab';
 import PartnerCalendarTab from '../components/partner/PartnerCalendarTab';
 import PartnerLeadsTab from '../components/partner/PartnerLeadsTab';
 import PartnerChatTab from '../components/partner/PartnerChatTab';
+import PartnerMobileApp from '../components/mobile/PartnerMobileApp';
 import '../styles/utilities.css';
 import './PartnerDashboard.css';
 
@@ -639,50 +640,23 @@ export default function PartnerDashboard() {
     showToast('Saved', 'Notification preference updated.', 'success');
   };
 
-  return (
-    <div className="partner-app">
-      {/* SIDEBAR */}
-      <PartnerSidebar
-        theme={theme}
-        profileData={profileData}
-        user={user}
-        activeTab={activeTab}
-        navTo={navTo}
-        projectsCount={projects.length}
-        leadsCount={leads.length}
-        t={t as any}
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        handleLogout={async () => { sessionStorage.removeItem('partnerActiveTab'); await supabase.auth.signOut(); window.location.href = '/'; }}
-        perms={employeePerms}
-      />
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-      {/* MAIN */}
-      <div className="main">
-        {toastMessage && (
-          <div style={{position: 'fixed', bottom: 30, right: 30, background: toastMessage.type === 'error' ? 'var(--red)' : 'var(--green)', color: '#fff', padding: '15px 20px', borderRadius: '8px', zIndex: 9999, boxShadow: '0 4px 15px rgba(0,0,0,0.3)', display: 'flex', flexDirection: 'column', gap: '5px'}}>
-            <strong style={{fontFamily: "'Syne', sans-serif"}}>{toastMessage.title}</strong>
-            <span style={{fontSize: '0.85rem'}}>{toastMessage.msg}</span>
-          </div>
-        )}
-        <PartnerHeader
-          theme={theme}
-          toggleTheme={toggleTheme}
-          activeTab={activeTab}
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-          t={t as any}
-          unreadCount={unreadCount}
-          notifOpen={notifOpen}
-          setNotifOpen={setNotifOpen}
-          notifications={notifications}
-          setNotifications={setNotifications}
-          user={user}
-          profileData={profileData}
-        />
-        <div className="content">
-          {/* DASHBOARD */}
-          {activeTab === 'dashboard' && (
+  const renderTabContent = (targetTab: string) => (
+    <>
+      {toastMessage && (
+        <div style={{position: 'fixed', bottom: 30, right: 30, background: toastMessage.type === 'error' ? 'var(--red)' : 'var(--green)', color: '#fff', padding: '15px 20px', borderRadius: '8px', zIndex: 9999, boxShadow: '0 4px 15px rgba(0,0,0,0.3)', display: 'flex', flexDirection: 'column', gap: '5px'}}>
+          <strong style={{fontFamily: "'Syne', sans-serif"}}>{toastMessage.title}</strong>
+          <span style={{fontSize: '0.85rem'}}>{toastMessage.msg}</span>
+        </div>
+      )}
+      {/* DASHBOARD */}
+          {targetTab === 'dashboard' && (
             <PartnerHomeTab
               projects={projects}
               stages={stages}
@@ -695,18 +669,17 @@ export default function PartnerDashboard() {
             />
           )}
 
-          {/* PROPOSALS */}
-          {activeTab === 'proposals' && (!employeePerms || employeePerms.quotes?.view !== false) && (
+          {targetTab === 'proposals' && (!employeePerms || employeePerms.quotes?.view !== false) && (
             <PartnerProposalsTab
               user={user}
               leads={leads}
               clients={clients}
               showToast={showToast}
+              isMobile={isMobile}
             />
           )}
 
-          {/* PROJECTS */}
-          {activeTab === 'projects' && (!employeePerms || employeePerms.projects?.view !== false) && (
+          {targetTab === 'projects' && (!employeePerms || employeePerms.projects?.view !== false) && (
             <PartnerProjectsTab
               handleCreateProject={handleCreateProject}
               setSelectedProject={setSelectedProject}
@@ -718,7 +691,7 @@ export default function PartnerDashboard() {
             />
           )}
 
-          {activeTab === 'stages' && (!employeePerms || employeePerms.stages?.view !== false) && (
+          {targetTab === 'stages' && (!employeePerms || employeePerms.stages?.view !== false) && (
             <PartnerStagesTab
               projects={projects}
               selectedProject={selectedProject}
@@ -743,13 +716,11 @@ export default function PartnerDashboard() {
             />
           )}
 
-          {/* CALENDAR */}
-          {activeTab === 'calendar' && (!employeePerms || employeePerms.calendar?.view !== false) && (
+          {targetTab === 'calendar' && (!employeePerms || employeePerms.calendar?.view !== false) && (
             <PartnerCalendarTab projects={projects} showToast={showToast} user={user} canEdit={!employeePerms || employeePerms.calendar?.edit !== false} canDelete={!employeePerms || employeePerms.calendar?.delete !== false} />
           )}
 
-          {/* DAILY LOG */}
-          {activeTab === 'dailylog' && (!employeePerms || employeePerms.dailylog?.view !== false) && (
+          {targetTab === 'dailylog' && (!employeePerms || employeePerms.dailylog?.view !== false) && (
             <PartnerDailyLogTab
               projects={projects}
               logs={logs}
@@ -769,8 +740,7 @@ export default function PartnerDashboard() {
             />
           )}
 
-          {/* LEADS (fallback) */}
-          {activeTab === 'leads' && (!employeePerms || employeePerms.leads?.view !== false) && (
+          {targetTab === 'leads' && (!employeePerms || employeePerms.leads?.view !== false) && (
             <PartnerLeadsTab
               leads={leads}
               loadingDb={loadingDb}
@@ -790,8 +760,7 @@ export default function PartnerDashboard() {
             />
           )}
 
-          {/* CHAT */}
-          {activeTab === 'chat' && (!employeePerms || employeePerms.chat?.view !== false) && (
+          {targetTab === 'chat' && (!employeePerms || employeePerms.chat?.view !== false) && (
             <PartnerChatTab
               user={user}
               chatTab={chatTab}
@@ -853,8 +822,7 @@ export default function PartnerDashboard() {
             </div>
           )}
 
-          {/* UPLOADS */}
-          {activeTab === 'uploads' && (
+          {targetTab === 'uploads' && (
             <PartnerUploadsTab
               projects={projects}
               projectStages={stages}
@@ -870,8 +838,7 @@ export default function PartnerDashboard() {
             />
           )}
 
-          {/* PROFILE */}
-          {activeTab === 'profile' && (
+          {targetTab === 'profile' && (
             <PartnerProfileTab
               user={user}
               profileData={profileData}
@@ -894,17 +861,63 @@ export default function PartnerDashboard() {
             />
           )}
 
-          {/* TEAM */}
-          {activeTab === 'team' && (
+          {targetTab === 'team' && (
             <PartnerTeamTab user={user} showToast={showToast} />
           )}
 
+    </>
+  );
+
+  if (isMobile) {
+    return (
+      <PartnerMobileApp
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        user={user}
+        profileData={profileData}
+        unreadCount={unreadCount}
+        setNotifOpen={setNotifOpen}
+        renderTabContent={renderTabContent}
+      />
+    );
+  }
+
+  return (
+    <div className="partner-app">
+      <PartnerSidebar
+        theme={theme}
+        profileData={profileData}
+        user={user}
+        activeTab={activeTab}
+        navTo={navTo}
+        projectsCount={projects.length}
+        leadsCount={leads.length}
+        t={t as any}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        handleLogout={async () => { sessionStorage.removeItem('partnerActiveTab'); await supabase.auth.signOut(); window.location.href = '/'; }}
+        perms={employeePerms}
+      />
+      <div className="main">
+        <PartnerHeader
+          theme={theme}
+          toggleTheme={toggleTheme}
+          activeTab={activeTab}
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          t={t as any}
+          unreadCount={unreadCount}
+          notifOpen={notifOpen}
+          setNotifOpen={setNotifOpen}
+          notifications={notifications}
+          setNotifications={setNotifications}
+          user={user}
+          profileData={profileData}
+        />
+        <div className="content">
+          {renderTabContent(activeTab)}
         </div>
-      </div>
-
-
-
-      {/* NOVO PROJETO MODAL */}
+      </div>      {/* NOVO PROJETO MODAL */}
       {isNewProjectOpen && (
         <div className="modal-overlay open" onClick={() => setIsNewProjectOpen(false)}>
           <div className="modal" onClick={e => e.stopPropagation()} style={{maxWidth: '650px'}}>

@@ -14,6 +14,7 @@ interface PartnerProposalsTabProps {
   leads: Lead[];
   clients: Client[];
   showToast: (title: string, msg: string, type: 'error'|'success'|'info') => void;
+  isMobile?: boolean;
 }
 
 const quillModules = {
@@ -34,7 +35,7 @@ const quillFormats = [
   'blockquote', 'link', 'image', 'video'
 ];
 
-export default function PartnerProposalsTab({ user, leads, clients, showToast }: PartnerProposalsTabProps) {
+export default function PartnerProposalsTab({ user, leads, clients, showToast, isMobile = false }: PartnerProposalsTabProps) {
   const { t, lang } = useLanguage();
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [templates, setTemplates] = useState<ProposalTemplate[]>([]);
@@ -409,18 +410,20 @@ export default function PartnerProposalsTab({ user, leads, clients, showToast }:
           <div className="u-mono-label-xs">{proposals.length} {t('activeProposalsCount')} | {templates.length} {t('templatesInLibrary')}</div>
           <div className="u-syne-title u-mt-3">{t('proposalsManagement')}</div>
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button className="btn" style={{background: 'var(--bg2)', border: '1px solid var(--border)'}} onClick={() => { setTemplateForm({id:'', name:'', content: ''}); setActiveSubTab('template_form'); }}>
-             {t('createTemplate')}
-          </button>
-          <button className="btn gold" onClick={() => { setProposalForm(initialProposalState); setWizardStep(1); setActiveSubTab('proposal_form'); }}>
-             {t('newProposalBtn')}
-          </button>
-        </div>
+        {!isMobile && (
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button className="btn" style={{background: 'var(--bg2)', border: '1px solid var(--border)'}} onClick={() => { setTemplateForm({id:'', name:'', content: ''}); setActiveSubTab('template_form'); }}>
+               {t('createTemplate')}
+            </button>
+            <button className="btn gold" onClick={() => { setProposalForm(initialProposalState); setWizardStep(1); setActiveSubTab('proposal_form'); }}>
+               {t('newProposalBtn')}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* TABS SELECTOR */}
-      {['proposals', 'templates'].includes(activeSubTab) && (
+      {['proposals', 'templates'].includes(activeSubTab) && !isMobile && (
         <div style={{ display: 'flex', gap: '30px', marginBottom: '20px', borderBottom: '1px solid var(--border)', paddingBottom: '10px' }}>
            <button onClick={() => setActiveSubTab('proposals')} style={{ background: 'transparent', color: activeSubTab === 'proposals' ? 'var(--gold)' : 'var(--t2)', border: 'none', fontWeight: activeSubTab === 'proposals' ? '700' : '500', cursor: 'pointer', fontSize: '1rem', paddingBottom: 10, borderBottom: activeSubTab === 'proposals' ? '2px solid var(--gold)' : '2px solid transparent', marginBottom: -12, transition: 'all 0.2s' }}>{t('activeProposals')}</button>
            <button onClick={() => setActiveSubTab('templates')} style={{ background: 'transparent', color: activeSubTab === 'templates' ? 'var(--gold)' : 'var(--t2)', border: 'none', fontWeight: activeSubTab === 'templates' ? '700' : '500', cursor: 'pointer', fontSize: '1rem', paddingBottom: 10, borderBottom: activeSubTab === 'templates' ? '2px solid var(--gold)' : '2px solid transparent', marginBottom: -12, transition: 'all 0.2s' }}>{t('templatesLibrary')}</button>
