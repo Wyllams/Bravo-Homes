@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D4A853"/>
+      <stop offset="50%" stop-color="#C9943A"/>
+      <stop offset="100%" stop-color="#B8843A"/>
+    </linearGradient>
+  </defs>
+  <!-- Dark blue background -->
+  <rect width="64" height="64" rx="8" fill="#0C1B3A"/>
+  <!-- B letter - left part -->
+  <path d="M14 12 L14 52 L36 52 C42 52 46 48 46 43 C46 39 43.5 36 40 35 C42.5 34 44 31 44 28 C44 22 40 18 34 18 L22 18 L22 28 L14 28 L14 12 Z M22 28 L22 34 L33 34 C35.5 34 37 32.5 37 30.5 C37 28.5 35.5 27 33 27 L22 27 Z M22 40 L22 46 L35 46 C37.5 46 39 44.5 39 42.5 C39 40.5 37.5 39 35 39 L22 39 Z" fill="url(#gold)" fill-rule="evenodd"/>
+  <!-- H letter - right vertical stroke -->
+  <path d="M42 12 L50 12 L50 52 L42 52 Z" fill="url(#gold)"/>
+  <!-- H letter - horizontal bar connecting to B -->
+  <path d="M36 28 L50 28 L50 36 L36 36 Z" fill="url(#gold)"/>
+</svg>
